@@ -59,13 +59,25 @@ class DatabaseSeeder extends Seeder
         // =============== BOOKS (chunked insert) ===============
         $totalBooks = 100000;
         $batchSize = 1000;
-        for ($i = 0; $i < $totalBooks / $batchSize; $i++) {
+
+        ini_set('max_execution_time', 0);
+        ini_set('memory_limit', '2048M');
+
+        $numBatches = (int) ceil($totalBooks / $batchSize);
+
+        for ($i = 0; $i < $numBatches; $i++) {
             $books = [];
-            for ($j = 0; $j < $batchSize; $j++) {
+
+            // hitung sisa record biar batch terakhir tidak lebih dari totalBooks
+            $remaining = $totalBooks - ($i * $batchSize);
+            $currentBatchSize = min($batchSize, $remaining);
+
+            for ($j = 0; $j < $currentBatchSize; $j++) {
                 $books[] = [
                     'author_id' => rand(1, 1000),
                     'title' => $faker->sentence(3),
                     'isbn' => 'ISBN-' . str_pad($faker->unique()->numberBetween(1, 1000000), 7, '0', STR_PAD_LEFT),
+                    'publisher' => $faker->randomElement(['Gramedia', 'Erlangga', 'Bentang', 'Mizan', 'KPG', 'Elex Media']),
                     'publication_year' => $faker->numberBetween(1990, 2025),
                     'availability' => $faker->randomElement(['available', 'rented', 'reserved']),
                     'store_location' => $faker->randomElement(['Jakarta', 'Bali', 'Bandung', 'Surabaya']),
@@ -73,8 +85,20 @@ class DatabaseSeeder extends Seeder
                     'updated_at' => now(),
                 ];
             }
+
             DB::table('books')->insert($books);
+            unset($books);
+            gc_collect_cycles();
+
+            if ($i % 10 === 0) {
+                echo "Inserted batch {$i}/{$numBatches}\n";
+                sleep(1);
+            }
         }
+
+        echo "✅ Books seeding finished! Total: {$totalBooks}\n";
+
+
 
         // =============== BOOK CATEGORY PIVOT ===============
         $bookCount = DB::table('books')->count();
@@ -96,20 +120,35 @@ class DatabaseSeeder extends Seeder
         // =============== RATINGS (chunked insert) ===============
         $totalRatings = 500000;
         $batchSize = 5000;
-        for ($i = 0; $i < $totalRatings / $batchSize; $i++) {
+
+        $numBatches = (int) ceil($totalRatings / $batchSize);
+
+        for ($i = 0; $i < $numBatches; $i++) {
             $ratings = [];
-            for ($j = 0; $j < $batchSize; $j++) {
+
+            $remaining = $totalRatings - ($i * $batchSize);
+            $currentBatchSize = min($batchSize, $remaining);
+
+            for ($j = 0; $j < $currentBatchSize; $j++) {
                 $ratings[] = [
-                    'book_id' => rand(1, 100000),
+                    'book_id' => rand(1, $totalBooks),
                     'user_identifier' => 'user_' . rand(1, 10000),
                     'rating' => rand(1, 10),
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
             }
+
             DB::table('ratings')->insert($ratings);
+            unset($ratings);
+            gc_collect_cycles();
+
+            if ($i % 10 === 0) {
+                echo "Inserted rating batch {$i}/{$numBatches}\n";
+                sleep(1);
+            }
         }
 
-        $this->command->info('✅ Seeding selesai dengan sukses!');
+        echo "✅ Ratings seeding finished! Total: {$totalRatings}\n";
     }
 }
