@@ -17,12 +17,11 @@ use App\Http\Controllers\RatingController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/', [BookController::class, 'index'])->name('books.index');
-Route::get('/books', [BookController::class, 'index'])->name('books.index');
 Route::post('/books/{book}/rate', [BookController::class, 'rate'])->name('books.rate');
 
 Route::get('/authors', [AuthorController::class, 'index'])->name('authors.index');

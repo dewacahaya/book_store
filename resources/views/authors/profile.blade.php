@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-md-3">
                     <h5>Total Ratings</h5>
-                    <p class="fw-bold">{{ $author->total_ratings }}</p>
+                    <p class="fw-bold">{{ $author->total_votes }}</p>
                 </div>
                 <div class="col-md-3">
                     <h5>Average Rating</h5>
@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($booksWithAvg as $book)
+                    @foreach ($books as $book)
                         <tr>
                             <td>{{ $book->title }}</td>
                             <td>{{ number_format($book->avg_rating, 2) }}</td>

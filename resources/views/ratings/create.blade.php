@@ -7,30 +7,19 @@
         @csrf
 
         <div class="mb-3">
-            <label for="author" class="form-label">Author</label>
-            <select name="author_id" id="author" class="form-select" required>
-                <option value="">-- Select Author --</option>
-                @foreach ($authors as $author)
-                    <option value="{{ $author->id }}"
-                        {{ isset($selectedBook) && $selectedBook->author_id == $author->id ? 'selected' : '' }}>
-                        {{ $author->name }}
-                    </option>
-                @endforeach
-            </select>
+            <label for="author_input" class="form-label">Author</label>
+            <input type="text" id="author_input" class="form-control" value="{{ isset($selectedBook) ? $selectedBook->author->name : '' }}" readonly>
+            <input type="hidden" name="author_id" id="author_id" value="{{ isset($selectedBook) ? $selectedBook->author_id : '' }}">
         </div>
 
         <div class="mb-3">
-            <label for="book" class="form-label">Book (related to author)</label>
-            <select name="book_id" id="book" class="form-select" required>
-                <option value="">-- Select Book --</option>
-                @if (isset($selectedBook))
-                    <option value="{{ $selectedBook->id }}" selected>{{ $selectedBook->title }}</option>
-                @endif
-            </select>
+            <label for="book_input" class="form-label">Book (related to author)</label>
+            <input type="text" id="book_input" class="form-control" value="{{ isset($selectedBook) ? $selectedBook->title : '' }}" readonly>
+            <input type="hidden" name="book_id" id="book_id" value="{{ isset($selectedBook) ? $selectedBook->id : '' }}">
         </div>
 
         <div class="mb-3">
-            <label for="rating" class="form-label">Rating (1–10)</label>
+            <label for="rating" class="form-label">Rating (1-10)</label>
             <select name="rating" id="rating" class="form-select" required>
                 @for ($i = 1; $i <= 10; $i++)
                     <option value="{{ $i }}">{{ $i }}</option>
@@ -41,7 +30,7 @@
         <button type="submit" class="btn btn-primary">Submit Rating</button>
     </form>
 
-    <script>
+    {{-- <script>
         const authors = @json($authors);
         const authorSelect = document.getElementById('author');
         const bookSelect = document.getElementById('book');
@@ -67,5 +56,5 @@
 
         // Auto-load jika ada selectedBook
         if (authorSelect.value) populateBooks(authorSelect.value);
-    </script>
+    </script> --}}
 @endsection

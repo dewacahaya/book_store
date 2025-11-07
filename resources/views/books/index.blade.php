@@ -190,7 +190,7 @@
                         @elseif ($within24)
                             <button class="btn btn-outline-secondary alert-btn">Vote</button>
                         @else
-                            <a href="{{ route('ratings.create', $book->id) }}" class="btn btn-primary">Vote</a>
+                        <a href="{{ route('ratings.create', $book->id) }}" class="btn btn-primary">Vote</a>
                         @endif
                     </td>
                 </tr>
