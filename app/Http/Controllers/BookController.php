@@ -26,10 +26,6 @@ class BookController extends Controller
                 }
             ]);
 
-        // ===============================================
-        // ✅ BARU: Tambahkan agregasi 7 hari untuk Tren Rating
-        // ===============================================
-
         // Rata-rata 7 hari terakhir
         $query->withAvg([
             'ratings as avg_rating_7d' => function ($q) use ($sevenDaysAgo) {
@@ -43,8 +39,6 @@ class BookController extends Controller
                 $q->where('created_at', '<', $sevenDaysAgo);
             }
         ], 'rating');
-
-        // ... (Filter dan Sorting tetap sama) ...
 
         /**
          * 🔎 Filter kategori (AND/OR)
